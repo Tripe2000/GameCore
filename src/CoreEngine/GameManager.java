@@ -1,16 +1,21 @@
 package CoreEngine;
 
+import static Display.Display.getGamePanel;
+import static Display.Display.getPlayer;
+import static Display.Display.isGameRunning;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 
 public class GameManager implements Runnable {
+
+    private final static long MAIN_SLEEP_TIME = 18;
     
     @Override
     public void run() {
-        while(gameIsRunning) {
+        while(isGameRunning) {
             //manage the keys currently pressed
             manageKeys();
-            gamePanel.repaintGame();
+            getGamePanel().repaintGame();
             
             try {
                 Thread.sleep(MAIN_SLEEP_TIME);
@@ -26,13 +31,15 @@ public class GameManager implements Runnable {
         // manage possible actions
         if(currentKeys.contains(KeyEvent.VK_RIGHT)) {
             //move right
-            player.move(KeyEvent.VK_RIGHT);
+            getPlayer().move(KeyEvent.VK_RIGHT);
+            System.out.println("Right");
         } else if (currentKeys.contains(KeyEvent.VK_LEFT)) {
             //move left
-            player.move(KeyEvent.VK_LEFT);
+            getPlayer().move(KeyEvent.VK_LEFT);
+            System.out.println("Left");
         } else if (currentKeys.isEmpty()) {
             //stands still
-            player.stop();
+            getPlayer().stop();
         }
     }
 }

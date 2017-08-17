@@ -4,6 +4,23 @@ import java.awt.event.KeyEvent;
 
 public class Player {
     
+    public final static int MOVE_COUNTER_THRESH = 5;
+    
+    public double currentX;
+    public double currentY;
+    public double DISPLACEMENT = 5;
+    public BoundingBox boundingBox;
+    public String currentFrame;
+    public String[] run_L;
+    public String[] run_R;
+    public int currentFrameNumber;
+    public int last_direction;
+    public int moveCounter;
+    
+    public Player() {
+        boundingBox = new BoundingBox();
+    }
+    
     public void move(int direction) {
         switch(direction) {
             case KeyEvent.VK_LEFT:
@@ -41,6 +58,9 @@ public class Player {
         }
         
         moveCounter++;
+    }
+    
+    public void stop() {
     }
     
     //sets the current frame when the boy is moving - we have a total of 5 frames for 
