@@ -6,9 +6,7 @@ import static Display.Display.isGameRunning;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 
-public class GameManager implements Runnable {
-
-    private final static long MAIN_SLEEP_TIME = 18;
+public class GameManager implements Runnable, CoreInterface {
     
     @Override
     public void run() {
@@ -32,11 +30,11 @@ public class GameManager implements Runnable {
         if(currentKeys.contains(KeyEvent.VK_RIGHT)) {
             //move right
             getPlayer().move(KeyEvent.VK_RIGHT);
-            System.out.println("Right");
+            //System.out.println("move(KeyEvent.VK_RIGHT);");
         } else if (currentKeys.contains(KeyEvent.VK_LEFT)) {
             //move left
             getPlayer().move(KeyEvent.VK_LEFT);
-            System.out.println("Left");
+            //System.out.println("move(KeyEvent.VK_LEFT);");
         } else if (currentKeys.isEmpty()) {
             //stands still
             getPlayer().stop();
