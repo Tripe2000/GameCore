@@ -1,6 +1,13 @@
+/**
+ *Date: 17/08/2017
+ *Author: Whaleballs
+ *File Name: Weapon.java
+ *Project Name: GameCore
+ */
+
 package World;
 
-public class Weapon extends Item {
+public class Weapon {
     
     //weapon description
     protected String abilityDescription;    //describes weapons main ability
