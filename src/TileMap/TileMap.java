@@ -31,17 +31,19 @@ public class TileMap implements MainInterface {
     private double tween;
     
     //map
-    private int[][] map;
+    private int[][] map;                                                        //maps the position of the tiles in the chosen level (number within represents the tile that should be there, 
+                                                                                //numbers are based on file of tiles ex.: [1]  [2]  [3]  [4]  [5]  [6]  [7]
+                                                                                //                                        [8]  [9]  [10] [11] [12] [13] [14]) <-- being the file of tiles
     private int tileSize;
-    private int numberRows;
-    private int numberColumns;
-    private int width;
-    private int height;
+    private int totalNumberRows;                                                //total number in map file
+    private int totalNumberColumns;                                             //total number in map file
+    private int width;                                                          //width of map
+    private int height;                                                         //height of map
     
     //tileset
     private BufferedImage tileSet;
     private int numberTilesAcross;
-    private Tile[][] tiles;
+    private Tile[][] tiles;                                                     //array that has all tiles used in the map, from the chosen file
     
     //drawing
     private int rowOffset;
@@ -62,15 +64,21 @@ public class TileMap implements MainInterface {
             tileSet = ImageIO.read(getClass().getResourceAsStream(s));
             
             numberTilesAcross = tileSet.getWidth() / tileSize;
-            tiles = new Tile[2][numberTilesAcross];
+            tiles = new Tile[2][numberTilesAcross];                             //2 is the number of rows of tiles in the file chosen
             
             BufferedImage subImage;
             for(int column = 0; column < numberTilesAcross; column++) {
                 
-                subImage = tileSet.getSubimage(column * tileSize, 0, tileSize, tileSize);
-                tiles[0][column] = new Tile(subImage, Tile.NORMAL);
+                subImage = tileSet.getSubimage(column * tileSize,               //x position of subimage top-left corner
+                                                0,                              //y position of subimage top-left corner
+                                                tileSize,                       //x position of subimage bottom-right corner
+                                                tileSize);                      //y position of subimage bottom-right corner
+                tiles[0][column] = new Tile(subImage, Tile.NORMAL);             //tile type
                 
-                subImage = tileSet.getSubimage(column * tileSize, tileSize, tileSize, tileSize);
+                subImage = tileSet.getSubimage(column * tileSize, 
+                                                tileSize, 
+                                                tileSize, 
+                                                tileSize);
                 tiles[1][column] = new Tile(subImage, Tile.BLOCKED);
             }
             
@@ -82,21 +90,21 @@ public class TileMap implements MainInterface {
     public void loadMap(String s) {
         try {
             
-            InputStream in = getClass().getResourceAsStream(s);
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            InputStream inputStream = getClass().getResourceAsStream(s);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             
-            numberColumns = Integer.parseInt(br.readLine());
-            numberRows = Integer.parseInt(br.readLine());
-            map = new int[numberRows][numberColumns];
-            width = numberColumns * tileSize;
-            height = numberRows * tileSize;
+            totalNumberColumns = Integer.parseInt(bufferedReader.readLine());        //metadata in the map file loaded
+            totalNumberRows = Integer.parseInt(bufferedReader.readLine());           //metadata in the map file loaded
+            map = new int[totalNumberRows][totalNumberColumns];
+            width = totalNumberColumns * tileSize;
+            height = totalNumberRows * tileSize;
             
             String delimiters = "\\s+";
-            for(int row = 0; row < numberRows; row++) {
+            for(int row = 0; row < totalNumberRows; row++) {
                 
-                String line = br.readLine();
+                String line = bufferedReader.readLine();
                 String[] tokens = line.split(delimiters);
-                for(int column = 0; column < numberColumns; column++) {
+                for(int column = 0; column < totalNumberColumns; column++) {
                     map[row][column] = Integer.parseInt(tokens[column]);
                 }
                 
@@ -113,7 +121,7 @@ public class TileMap implements MainInterface {
     public int getWidth() { return width; }
     public int getHeight() { return height; }
     
-    public int getTypee(int row, int column) {
+    public int getType(int row, int column) {
         int rc = map[row][column];
         int r = rc / numberTilesAcross;
         int c = rc % numberTilesAcross;
@@ -130,7 +138,7 @@ public class TileMap implements MainInterface {
         rowOffset = (int)-this.y / tileSize;
     }
     
-    private void fixBounds() {
+    private void fixBounds() {                                                  //no clue
         if(x < xMin) x = xMin;
         if(y < yMin) y = yMin;
         if(x > xMax) x = xMax;
@@ -140,18 +148,17 @@ public class TileMap implements MainInterface {
     public void draw(Graphics2D g) {
         for(int row = rowOffset; row < rowOffset + numberRowsToDraw; row++) {
             
-            if(row >= numberRows) break;
+            if(row >= totalNumberRows) break;
             
             for(int column = columnOffset; column < columnOffset + numberColumnsToDraw; column++) {
-                
-                if(column >= numberColumns) break;
+                if(column >= totalNumberColumns) break;
                 if(map[row][column] == 0) continue;
                 
                 int rc = map[row][column];
                 int r = rc / numberTilesAcross;
                 int c = rc % numberTilesAcross;
                 
-                g.drawImage(tiles[r][c].getImage(), (int)x + column * tileSize, (int)y + row * tileSize, null);
+                g.drawImage(tiles[r][c].getImage(), (int)x + column * tileSize, (int)y + row * tileSize + 120, null);       //the (+120) in the images y position is so that the current map and tiles starts at the bottom of the screen
             }
         }
     }

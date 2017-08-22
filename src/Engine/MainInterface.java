@@ -13,5 +13,7 @@ public interface MainInterface {
     int HEIGHT = 360;  //720;
     int SCALE = 2;
     
+    int TILE_SIZE = 30;
+    
     String MENU_BACKGROUND = "/Backgrounds/menuBackground.gif";
 }

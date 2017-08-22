@@ -19,7 +19,7 @@ public class GameStateManager {
     public GameStateManager() {
         gameStates = new ArrayList<GameState>();
         currentState = MENUSTATE;
-        gameStates.add(new MenuState(this));
+        gameStates.add(new MenuState(this));                                    //gotta add these in order, else it fucks the getState method
         gameStates.add(new InWorldState(this));
     }
     
