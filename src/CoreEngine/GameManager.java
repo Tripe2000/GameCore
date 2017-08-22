@@ -14,12 +14,12 @@ public class GameManager implements CoreInterface {
     
     public static boolean isGameRunning = false;
     
-    public static void main(String[] args) {      
+    /*public static void main(String[] args) {      
         isGameRunning = true;
         Display frame = new Display(GAME_NAME);
         frame.setVisible(true);
         entitiesPanel.requestFocusInWindow();
         Thread mainThread = new Thread(new PlayerManager());
         mainThread.start();
-    }
+    }*/
 }

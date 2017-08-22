@@ -47,11 +47,14 @@ public class MenuState extends GameState {
     }
     
     @Override
-    public void initialize() {}
+    public void initialize() {
+    }
+    
     @Override
     public void update() {
         background.update();
     }
+    
     @Override
     public void draw(Graphics2D g) {
         //draw background
@@ -75,6 +78,7 @@ public class MenuState extends GameState {
             g.drawString(options[i], (MainInterface.WIDTH - fontMetrics.stringWidth("help"))/2, MainInterface.HEIGHT/2 + i * 15);
         }
     }
+    
     @Override
     public void keyPressed(int key) {
         switch(key) {
@@ -97,6 +101,7 @@ public class MenuState extends GameState {
                 break;
         }
     }
+    
     @Override
     public void keyReleased(int key) {
     }
@@ -104,7 +109,7 @@ public class MenuState extends GameState {
     private void select() {
         switch(currentChoice) {
             case 0:
-                //start
+                gameStateManager.setState(GameStateManager.IN_WORLD_STATE);
                 break;
             case 1:
                 //help

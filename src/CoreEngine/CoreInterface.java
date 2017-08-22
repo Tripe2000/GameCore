@@ -12,7 +12,7 @@ public interface CoreInterface {
     int WIDTH  = 1280;                                                          //Game frame width
     int HEIGHT = 720;                                                           //Game frame height
     
-    int MAIN_SLEEP_TIME = 75;                                                  //GameManager's thread sleep time
+    int MAIN_SLEEP_TIME = 100;                                                  //GameManager's thread sleep time
     int MOVE_COUNTER_THRESH = 2;                                                //Move counter before animation switch
     int DISPLACEMENT = 10;                                                      //Player displacement on move
     int TOTAL_FRAMES_IN_SPRINT_ANIMATION = 6;                                   //total amount of frames in sprinting animation

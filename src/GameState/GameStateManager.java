@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class GameStateManager {
     public static final int MENUSTATE = 0;
-    public static final int LEVEL_1_STATE = 1;
+    public static final int IN_WORLD_STATE = 1;
     
     private ArrayList<GameState> gameStates;
     private int currentState;
@@ -20,6 +20,7 @@ public class GameStateManager {
         gameStates = new ArrayList<GameState>();
         currentState = MENUSTATE;
         gameStates.add(new MenuState(this));
+        gameStates.add(new InWorldState(this));
     }
     
     public void setState(int state) {
