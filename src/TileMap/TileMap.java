@@ -99,6 +99,11 @@ public class TileMap implements MainInterface {
             width = numberColumns * tileSize;
             height = numberRows * tileSize;
             
+            xMin = MainInterface.WIDTH - width;
+            xMax = 0;
+            yMin = MainInterface.HEIGHT - height;
+            yMax = 0;
+            
             String delimiters = "\\s+";
             for(int row = 0; row < numberRows; row++) {
                 
@@ -160,7 +165,7 @@ public class TileMap implements MainInterface {
                 int r = rc / numberTilesAcross;
                 int c = rc % numberTilesAcross;
                 
-                g.drawImage(tiles[r][c].getImage(), (int)x + column * tileSize, (int)y + row * tileSize + 120, null);       //the (+120) in the images y position is so that the current map and tiles starts at the bottom of the screen
+                g.drawImage(tiles[r][c].getImage(), (int)x + column * tileSize, (int)y + row * tileSize, null);
             }
         }
     }
