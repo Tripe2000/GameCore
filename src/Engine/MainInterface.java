@@ -16,4 +16,5 @@ public interface MainInterface {
     int TILE_SIZE = 30;
     
     String MENU_BACKGROUND = "/Backgrounds/menuBackground.gif";
+    String GRASS_BACKGROUND = "/Backgrounds/grassbackground1.gif";
 }

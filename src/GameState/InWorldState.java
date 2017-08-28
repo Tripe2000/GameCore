@@ -30,7 +30,7 @@ public class InWorldState extends GameState {
         tileMap.loadTiles("/Tilesets/grasstileset.gif");
         tileMap.loadMap("/Maps/level1-1.map");
         tileMap.setPosition(0, 0);
-        background = new Background(MENU_BACKGROUND, 1);
+        background = new Background(GRASS_BACKGROUND, 0.1);
         background.setVector(0.5, 0);
     }
     
@@ -42,10 +42,9 @@ public class InWorldState extends GameState {
     @Override
     public void draw(Graphics2D g) {
         
-        //clear screen
-        g.setColor(Color.WHITE);
-        g.fillRect(0, 0, MainInterface.WIDTH, MainInterface.HEIGHT);
+        //draw background
         background.draw(g);
+        
         //draw tilemap
         tileMap.draw(g);
     }

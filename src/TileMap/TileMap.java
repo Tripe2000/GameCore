@@ -35,8 +35,8 @@ public class TileMap implements MainInterface {
                                                                                 //numbers are based on file of tiles ex.: [1]  [2]  [3]  [4]  [5]  [6]  [7]
                                                                                 //                                        [8]  [9]  [10] [11] [12] [13] [14]) <-- being the file of tiles
     private int tileSize;
-    private int totalNumberRows;                                                //total number in map file
-    private int totalNumberColumns;                                             //total number in map file
+    private int numberRows;                                                     //total number in map file
+    private int numberColumns;                                                  //total number in map file
     private int width;                                                          //width of map
     private int height;                                                         //height of map
     
@@ -93,18 +93,18 @@ public class TileMap implements MainInterface {
             InputStream inputStream = getClass().getResourceAsStream(s);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             
-            totalNumberColumns = Integer.parseInt(bufferedReader.readLine());        //metadata in the map file loaded
-            totalNumberRows = Integer.parseInt(bufferedReader.readLine());           //metadata in the map file loaded
-            map = new int[totalNumberRows][totalNumberColumns];
-            width = totalNumberColumns * tileSize;
-            height = totalNumberRows * tileSize;
+            numberColumns = Integer.parseInt(bufferedReader.readLine());        //metadata in the map file loaded
+            numberRows = Integer.parseInt(bufferedReader.readLine());           //metadata in the map file loaded
+            map = new int[numberRows][numberColumns];
+            width = numberColumns * tileSize;
+            height = numberRows * tileSize;
             
             String delimiters = "\\s+";
-            for(int row = 0; row < totalNumberRows; row++) {
+            for(int row = 0; row < numberRows; row++) {
                 
                 String line = bufferedReader.readLine();
                 String[] tokens = line.split(delimiters);
-                for(int column = 0; column < totalNumberColumns; column++) {
+                for(int column = 0; column < numberColumns; column++) {
                     map[row][column] = Integer.parseInt(tokens[column]);
                 }
                 
@@ -120,6 +120,8 @@ public class TileMap implements MainInterface {
     public int getY() { return (int)y; }
     public int getWidth() { return width; }
     public int getHeight() { return height; }
+    public int getNumberRows() { return numberRows; }
+    public int getNumberColumns() { return numberColumns; }
     
     public int getType(int row, int column) {
         int rc = map[row][column];
@@ -148,10 +150,10 @@ public class TileMap implements MainInterface {
     public void draw(Graphics2D g) {
         for(int row = rowOffset; row < rowOffset + numberRowsToDraw; row++) {
             
-            if(row >= totalNumberRows) break;
+            if(row >= numberRows) break;
             
             for(int column = columnOffset; column < columnOffset + numberColumnsToDraw; column++) {
-                if(column >= totalNumberColumns) break;
+                if(column >= numberColumns) break;
                 if(map[row][column] == 0) continue;
                 
                 int rc = map[row][column];
