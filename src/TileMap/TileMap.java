@@ -121,8 +121,8 @@ public class TileMap implements MainInterface {
     }
     
     public int getTileSize() { return tileSize; }
-    public int getX() { return (int)x; }
-    public int getY() { return (int)y; }
+    public double getX() { return x; }
+    public double getY() { return y; }
     public int getWidth() { return width; }
     public int getHeight() { return height; }
     public int getNumberRows() { return numberRows; }

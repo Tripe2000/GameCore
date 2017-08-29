@@ -12,7 +12,7 @@ import TileMap.Tile;
 import TileMap.TileMap;
 import java.awt.Rectangle;
 
-public abstract class WorldEntity {
+public abstract class WorldObject {
     
     //tile stuff
     protected TileMap tileMap;
@@ -70,13 +70,13 @@ public abstract class WorldEntity {
     protected double stopJumpSpeed;
     
     //constructor
-    public WorldEntity(TileMap tm) {
+    public WorldObject(TileMap tm) {
         tileMap = tm;
         tileSize = tm.getTileSize();
     }
     
     //check if collision box intersects
-    public boolean intersects(WorldEntity entity) {
+    public boolean intersects(WorldObject entity) {
         Rectangle r1 = getCollisionRectangle();
         Rectangle r2 = entity.getCollisionRectangle();
         return r1.intersects(r2);

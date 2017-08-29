@@ -7,13 +7,15 @@
 
 package Entity;
 
+import static Engine.MainInterface.NUMBER_OF_PLAYER_SPRITES;
+import static Engine.MainInterface.PLAYER_SPRITES;
 import TileMap.TileMap;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
-public class Player extends WorldEntity {
+public class Player extends WorldObject {
     
     //player stuff
     private int health;
@@ -28,7 +30,7 @@ public class Player extends WorldEntity {
     private boolean firing;
     private int fireCost;
     private int fireBallDamage;
-    //private ArrayList<FireBall> fireBalls;
+    private ArrayList<FireBall> fireBalls;
     
     //scratch
     private boolean scratching;
@@ -40,8 +42,9 @@ public class Player extends WorldEntity {
     
     //animation stuff
     private ArrayList<BufferedImage[]> sprites;
-    private final int[] numberFrames = {                        //keeps track of how many frames each animation has
-        2, 8, 1, 2, 4, 2, 5
+    private final int[] numberFrames = {                                        //keeps track of how many frames each animation has
+        //2, 8, 1, 2, 4, 2, 5
+        4, 6, 1, 1, 2, 2, 5
     };
     
     //animation actions
@@ -77,7 +80,7 @@ public class Player extends WorldEntity {
         
         fireCost = 200;
         fireBallDamage = 5;
-        //fireBalls = new ArrayList<FireBall>();
+        fireBalls = new ArrayList<FireBall>();
         
         scratchDamage = 8;
         scratchRange = 40;
@@ -86,31 +89,31 @@ public class Player extends WorldEntity {
         try {
             
             BufferedImage spriteSheet = ImageIO.read(
-                getClass().getResourceAsStream("/Sprites/Player/playersprites.gif")
+                getClass().getResourceAsStream(PLAYER_SPRITES)
             );
             
             sprites = new ArrayList<BufferedImage[]>();
             
-            for(int i = 0; i < 7; i++) {
+            for(int i = 0; i < NUMBER_OF_PLAYER_SPRITES; i++) {
                 BufferedImage[] bi = new BufferedImage[numberFrames[i]];
                 
                 for(int j = 0; j < numberFrames[i]; j++) {
                     
-                    if(i != 6) {
+                    //if(i != 6) {
                         bi[j] = spriteSheet.getSubimage(
                             j * width,
                             i * height, 
                             width,
                             height
                         );
-                    } else {
+                    /*} else {
                         bi[j] = spriteSheet.getSubimage(
                             j * width * 2,
                             i * height, 
-                            width,
+                            width * 2,
                             height
                         );
-                    }
+                    }*/
                 }
                 
                 sprites.add(bi);
@@ -131,17 +134,9 @@ public class Player extends WorldEntity {
     public int getFire() { return fire; }
     public int getMaxFire() { return maxFire; }
     
-    public void setFiring() {
-        firing = true;
-    }
-    
-    public void setScratching() {
-        scratching = true;
-    }
-    
-    public void setGliding(boolean b) {
-        gliding = b;
-    }
+    public void setFiring() { firing = true; }
+    public void setScratching() { scratching = true; }
+    public void setGliding(boolean b) { gliding = b; }
     
     private void getNextPosition() {
         
@@ -197,13 +192,44 @@ public class Player extends WorldEntity {
         checkTileMapCollision();
         setPosition(xTemp, yTemp);
         
+        
+        //check attack has stoppped
+        if(currentAction == SCRATCHING) {
+            if(animation.hasPlayedOnce()) scratching = false;
+        }
+        if(currentAction == FIREBALL) {
+            if(animation.hasPlayedOnce()) firing = false;
+        }
+        
+        //fireball attack
+        fire += 1;
+        if(fire > maxFire) fire = maxFire;
+        if(firing && currentAction != FIREBALL) {
+            if(fire > fireCost) {
+                fire -= fireCost;
+                FireBall fb = new FireBall(tileMap, facingRight);
+                fb.setPosition(x, y);
+                fireBalls.add(fb);
+                //currentAction = FIREBALL;
+            }
+        }
+        
+        //update fireballs
+        for(int i = 0; i < fireBalls.size(); i++) {
+            fireBalls.get(i).update();
+            if(fireBalls.get(i).shouldRemove()) {
+                fireBalls.remove(i);
+                i--;
+            }
+        }
+        
         //set animation
         if(scratching) {
             if(currentAction != SCRATCHING) {
                 currentAction = SCRATCHING;
                 animation.setFrames(sprites.get(SCRATCHING));
                 animation.setDelay(50);
-                width = 60;
+                width = 30;
             }
         } else if(firing) {
             if(currentAction != FIREBALL) {
@@ -260,6 +286,12 @@ public class Player extends WorldEntity {
     
     public void draw(Graphics2D g) {
         setMapPosition();
+        
+        
+        //draw fireballs
+        for(int i = 0; i < fireBalls.size(); i++) {
+            fireBalls.get(i).draw(g);
+        }
         
         //draw player
         if(flinching) {

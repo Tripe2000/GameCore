@@ -19,7 +19,7 @@ public class Animation {
     
     private boolean playedOnce;
     
-    public void Animation() {
+    public Animation() {
         playedOnce = false;
     }
     

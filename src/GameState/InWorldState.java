@@ -32,7 +32,7 @@ public class InWorldState extends GameState {
     public void initialize() {
         tileMap = new TileMap(TILE_SIZE);
         tileMap.loadTiles("/Tilesets/grasstileset.gif");
-        tileMap.loadMap("/Maps/level1-1.map");
+        tileMap.loadMap("/Maps/level1-1-test.map");
         tileMap.setPosition(0, 0);
         background = new Background(GRASS_BACKGROUND, 0.1);
         background.setVector(0.5, 0);

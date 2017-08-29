@@ -5,7 +5,7 @@
  *Project Name: GameCore
  */
 
-package CoreEngine;
+package Object;
 
 public interface InteractionInterface {
 	String NPC = 	"Introduce Yourself" + 				//(0) npc gets to know you
