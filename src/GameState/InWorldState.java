@@ -7,13 +7,11 @@
 
 package GameState;
 
-import Engine.MainInterface;
-import static Engine.MainInterface.MENU_BACKGROUND;
+import Main.KeyboardManager;
+import Main.MainInterface;
 import Entity.Player;
 import TileMap.Background;
 import TileMap.TileMap;
-import com.sun.glass.events.KeyEvent;
-import java.awt.Color;
 import java.awt.Graphics2D;
 
 public class InWorldState extends GameState {
@@ -23,8 +21,8 @@ public class InWorldState extends GameState {
     
     private Player player;
     
-    public InWorldState(GameStateManager gameStateManager) {
-        this.gameStateManager = gameStateManager;
+    public InWorldState(GameStateManager gsm) {
+        super(gsm);
         initialize();
     }
     
@@ -34,6 +32,7 @@ public class InWorldState extends GameState {
         tileMap.loadTiles("/Tilesets/grasstileset.gif");
         tileMap.loadMap("/Maps/level1-1-test.map");
         tileMap.setPosition(0, 0);
+        
         background = new Background(GRASS_BACKGROUND, 0.1);
         background.setVector(0.5, 0);
         
@@ -43,12 +42,16 @@ public class InWorldState extends GameState {
     
     @Override
     public void update() {
-        //background.update();
+        handleInput();
+        
         player.update();
         tileMap.setPosition(
                 MainInterface.WIDTH / 2 - player.getX(),
                 MainInterface.HEIGHT / 2 - player.getY()
         );
+        
+        //set background
+        background.setPosition(tileMap.getX(), tileMap.getY());
     }
     
     @Override
@@ -65,24 +68,16 @@ public class InWorldState extends GameState {
     }
     
     @Override
-    public void keyPressed(int key) {
-        if(key == KeyEvent.VK_LEFT) { player.setLeft(true); }
-        if(key == KeyEvent.VK_RIGHT) { player.setRight(true); }
-        if(key == KeyEvent.VK_UP) { player.setUp(true); }
-        if(key == KeyEvent.VK_DOWN) { player.setDown(true); }
-        if(key == KeyEvent.VK_W) { player.setJumping(true); }
-        if(key == KeyEvent.VK_E) { player.setGliding(true); }
-        if(key == KeyEvent.VK_R) { player.setScratching(); }
-        if(key == KeyEvent.VK_F) { player.setFiring(); }
-    }
-    
-    @Override
-    public void keyReleased(int key) {
-        if(key == KeyEvent.VK_LEFT) { player.setLeft(false); }
-        if(key == KeyEvent.VK_RIGHT) { player.setRight(false); }
-        if(key == KeyEvent.VK_UP) { player.setUp(false); }
-        if(key == KeyEvent.VK_DOWN) { player.setDown(false); }
-        if(key == KeyEvent.VK_W) { player.setJumping(false); }
-        if(key == KeyEvent.VK_E) { player.setGliding(false); }
+    public void handleInput() {
+        if(KeyboardManager.isPressed(KeyboardManager.ESCAPE)) { gameStateManager.setPaused(true); }
+        player.setLeft(KeyboardManager.keyState[KeyboardManager.LEFT]);
+        player.setRight(KeyboardManager.keyState[KeyboardManager.RIGHT]);
+        player.setUp(KeyboardManager.keyState[KeyboardManager.UP]);
+        player.setDown(KeyboardManager.keyState[KeyboardManager.DOWN]);
+        player.setJumping(KeyboardManager.keyState[KeyboardManager.BUTTON1]);
+        player.setGliding(KeyboardManager.keyState[KeyboardManager.BUTTON2]);
+        if(KeyboardManager.isPressed(KeyboardManager.BUTTON3)) { player.setUsingTool(); }
+        if(KeyboardManager.isPressed(KeyboardManager.BUTTON4)) { player.setFiring(); }
+        if(KeyboardManager.isPressed(KeyboardManager.B)) { player.setLaser(); }
     }
 }

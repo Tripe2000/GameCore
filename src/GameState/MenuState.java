@@ -7,13 +7,13 @@
 
 package GameState;
 
-import Engine.MainInterface;
+import Main.KeyboardManager;
+import Main.MainInterface;
 import TileMap.Background;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.event.KeyEvent;
 
 public class MenuState extends GameState {
     
@@ -22,7 +22,7 @@ public class MenuState extends GameState {
     private int currentChoice = 0;
     private String[] options = {
         "Start",
-        "Help",
+        "Resume",
         "Quit"
     };
     
@@ -31,8 +31,8 @@ public class MenuState extends GameState {
     
     private Font font;
     
-    public MenuState(GameStateManager gameStateManager) {
-        this.gameStateManager = gameStateManager;
+    public MenuState(GameStateManager gsm) {
+        super(gsm);
         try {
             background = new Background(MENU_BACKGROUND, 1);
             background.setVector(0.5, 0);
@@ -53,6 +53,7 @@ public class MenuState extends GameState {
     @Override
     public void update() {
         background.update();
+        handleInput();
     }
     
     @Override
@@ -75,35 +76,25 @@ public class MenuState extends GameState {
             } else {
                 g.setColor(Color.RED);
             }
-            g.drawString(options[i], (MainInterface.WIDTH - fontMetrics.stringWidth("help"))/2, MainInterface.HEIGHT/2 + i * 15);
+            g.drawString(options[i], (MainInterface.WIDTH - fontMetrics.stringWidth(options[i]))/2, MainInterface.HEIGHT/2 + i * 15);
         }
     }
     
     @Override
-    public void keyPressed(int key) {
-        switch(key) {
-            case KeyEvent.VK_ENTER:
-                select();
-                break;
-            case KeyEvent.VK_UP:
-                currentChoice--;
-                if(currentChoice == -1) {
-                    currentChoice = options.length - 1;
-                }
-                break;
-            case KeyEvent.VK_DOWN:
-                currentChoice++;
-                if(currentChoice == options.length) {
-                    currentChoice = 0;
-                }
-                break;
-            default:
-                break;
+    public void handleInput() {
+        if(KeyboardManager.isPressed(KeyboardManager.ENTER)) { select(); }
+        if(KeyboardManager.isPressed(KeyboardManager.UP)) {
+            currentChoice--;
+            if(currentChoice == -1) {
+                currentChoice = options.length - 1;
+            }
         }
-    }
-    
-    @Override
-    public void keyReleased(int key) {
+        if(KeyboardManager.isPressed(KeyboardManager.DOWN)) {
+            currentChoice++;
+            if(currentChoice == options.length) {
+                currentChoice = 0;
+            }
+        }
     }
     
     private void select() {
@@ -112,7 +103,7 @@ public class MenuState extends GameState {
                 gameStateManager.setState(GameStateManager.IN_WORLD_STATE);
                 break;
             case 1:
-                //help
+                //resume
                 break;
             case 2:
                 System.exit(0);

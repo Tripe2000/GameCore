@@ -7,16 +7,18 @@
 
 package GameState;
 
-import Engine.MainInterface;
+import Main.MainInterface;
 
 public abstract class GameState implements MainInterface {
     
     protected GameStateManager gameStateManager;
     
+    public GameState(GameStateManager gsm) {
+        gameStateManager = gsm;
+    }
+    
     public abstract void initialize();
     public abstract void update();
     public abstract void draw(java.awt.Graphics2D g);
-    public abstract void keyPressed(int key);
-    public abstract void keyReleased(int key);
-    
+    public abstract void handleInput();
 }

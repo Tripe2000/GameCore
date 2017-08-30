@@ -1,31 +1,31 @@
 /**
- *Date: 17/08/2017
+ *Date: 21/08/2017
  *Author: Whaleballs
- *File Name: FireBall.java
+ *File Name: LaserBeam.java
  *Project Name: GameCore
  */
 
 package Entity;
 
-import static Main.MainInterface.FIREBALL_SPRITE_SHEET;
+import static Main.MainInterface.LASERBEAM_SPRITESHEET;
 import TileMap.TileMap;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
-public class FireBall extends WorldObject {
+public class LaserBeam extends WorldObject {
     
-    private boolean hit;
-    private boolean remove;
     private BufferedImage[] sprites;
     private BufferedImage[] hitSprites;
     
-    public FireBall(TileMap tm, boolean right) {
+    private boolean hit = false;
+    private boolean remove = false;
+    
+    public LaserBeam(TileMap tm) {
         super(tm);
         
         moveSpeed = 3.8;
-        if(right) dx = moveSpeed;
-        else dx = -moveSpeed;
+        dx = moveSpeed;
         
         width = 30;
         height = 30;
@@ -35,34 +35,21 @@ public class FireBall extends WorldObject {
         //load sprites
         try {
             
-            BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream(FIREBALL_SPRITE_SHEET));
+            BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream(LASERBEAM_SPRITESHEET));
             
-            sprites = new BufferedImage[4];
-            for(int i = 0; i < sprites.length; i++) {
-                sprites[i] = spriteSheet.getSubimage(
-                        i * width,
-                        0,
-                        width,
-                        height
-                );
-            }
+            sprites = new BufferedImage[1];
+            hitSprites = new BufferedImage[1];
             
-            hitSprites = new BufferedImage[3];
-            for(int i = 0; i < hitSprites.length; i++) {
-                hitSprites[i] = spriteSheet.getSubimage(
-                        i * width,
-                        height,
-                        width,
-                        height
-                );
-            }
+            sprites[0] = spriteSheet.getSubimage(0, 0, width, height);
+            hitSprites[0] = spriteSheet.getSubimage(0, height, width, height);
             
-            animation = new Animation();
-            animation.setFrames(sprites);
-            animation.setDelay(70);
         } catch(Exception e) {
             e.printStackTrace();
         }
+        
+        animation = new Animation();
+        animation.setFrames(sprites);
+        animation.setDelay(-1);
     }
     
     public void setHit() {
@@ -75,6 +62,21 @@ public class FireBall extends WorldObject {
     
     public boolean shouldRemove() { return remove; }
     
+    public void shootLaser(boolean facingRight) { 
+        if(facingRight) { dx = moveSpeed; }
+        else { dx = -moveSpeed; }
+        
+        remove = false;
+        hit = false;
+        animation.setFrames(sprites);
+        animation.setDelay(100);
+        
+        calculateDistanceTravel();
+    }
+    
+    private void calculateDistanceTravel() {
+    }
+    
     public void update() {
         checkTileMapCollision();
         setPosition(xTemp, yTemp);
@@ -82,7 +84,7 @@ public class FireBall extends WorldObject {
         if(dx == 0 && !hit) setHit();
         
         animation.update();
-        if(hit && animation.hasPlayedOnce()) remove = true;
+        if(hit) remove = true;
     }
     
     public void draw(Graphics2D g) {
@@ -91,14 +93,14 @@ public class FireBall extends WorldObject {
         if(facingRight) {
             g.drawImage(
                 animation.getImage(),
-                (int)(x + xMap - width / 2),
+                (int)(x + xMap - width / 2) + 30,
                 (int)(y + yMap - height / 2),
                 null
             );
         } else {
             g.drawImage(
                 animation.getImage(),
-                (int)(x + xMap - width / 2 + width),
+                (int)(x + xMap - width / 2 + width) - 30,
                 (int)(y + yMap - height / 2),
                 -width,
                 height,

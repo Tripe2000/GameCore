@@ -7,20 +7,29 @@
 
 package GameState;
 
+import Entity.Player;
+import GameManager.GameManager;
 import java.util.ArrayList;
 
 public class GameStateManager {
+    
     public static final int MENUSTATE = 0;
     public static final int IN_WORLD_STATE = 1;
     
     private ArrayList<GameState> gameStates;
     private int currentState;
     
+    private boolean paused;
+    private PauseState pauseState;
+    
     public GameStateManager() {
         gameStates = new ArrayList<GameState>();
         currentState = MENUSTATE;
         gameStates.add(new MenuState(this));                                    //gotta add these in order, else it fucks the getState method
         gameStates.add(new InWorldState(this));
+        
+        pauseState = new PauseState(this);
+        paused = false;
     }
     
     public void setState(int state) {
@@ -29,18 +38,20 @@ public class GameStateManager {
     }
     
     public void update() {
+        if(paused) {
+            pauseState.update();
+            return;
+        }
         gameStates.get(currentState).update();
     }
     
     public void draw(java.awt.Graphics2D g) {
+        if(paused) {
+            pauseState.draw(g);
+            return;
+        }
         gameStates.get(currentState).draw(g);
     }
     
-    public void keyPressed(int key) {
-        gameStates.get(currentState).keyPressed(key);
-    }
-    
-    public void keyReleased(int key) {
-        gameStates.get(currentState).keyReleased(key);
-    }
+    public void setPaused(boolean b) { paused = b; }
 }

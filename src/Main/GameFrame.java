@@ -5,7 +5,7 @@
  *Project Name: GameCore
  */
 
-package Engine;
+package Main;
 
 import javax.swing.JFrame;
 

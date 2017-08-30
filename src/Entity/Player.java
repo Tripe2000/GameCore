@@ -7,8 +7,8 @@
 
 package Entity;
 
-import static Engine.MainInterface.NUMBER_OF_PLAYER_SPRITES;
-import static Engine.MainInterface.PLAYER_SPRITES;
+import Entity.Item.Sword;
+import static Main.MainInterface.PLAYER_SPRITES;
 import TileMap.TileMap;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 public class Player extends WorldObject {
+    
+    private Sword sword;
     
     //player stuff
     private int health;
@@ -26,14 +28,19 @@ public class Player extends WorldObject {
     private boolean flinching;
     private long flinchTimer;
     
+    //laser
+    private boolean laserShooting;
+    private int laserDamage;
+    private LaserBeam laserBeam;
+    
     //fireball
     private boolean firing;
     private int fireCost;
     private int fireBallDamage;
     private ArrayList<FireBall> fireBalls;
     
-    //scratch
-    private boolean scratching;
+    //use tool
+    private boolean usingTool;
     private int scratchDamage;
     private int scratchRange;
     
@@ -43,8 +50,7 @@ public class Player extends WorldObject {
     //animation stuff
     private ArrayList<BufferedImage[]> sprites;
     private final int[] numberFrames = {                                        //keeps track of how many frames each animation has
-        //2, 8, 1, 2, 4, 2, 5
-        4, 6, 1, 1, 2, 2, 5
+        4, 6, 1, 1, 1, 2, 5, 4
     };
     
     //animation actions
@@ -53,11 +59,14 @@ public class Player extends WorldObject {
     private static final int JUMPING = 2;
     private static final int FALLING = 3;
     private static final int GLIDING = 4;
-    private static final int FIREBALL = 5;
-    private static final int SCRATCHING = 6;
+    private static final int RANGE_ATTACK = 5;
+    private static final int USE_TOOL = 6;
+    private static final int LASER_ATTACK = 7;
     
     public Player(TileMap tm) {
         super(tm);
+        
+        sword = new Sword(tm);
         
         width = 30;
         height = 30;
@@ -78,6 +87,9 @@ public class Player extends WorldObject {
         health = maxHealth = 5;
         fire = maxFire = 2500;
         
+        laserDamage = 10;
+        laserBeam = new LaserBeam(tileMap);
+        
         fireCost = 200;
         fireBallDamage = 5;
         fireBalls = new ArrayList<FireBall>();
@@ -94,26 +106,16 @@ public class Player extends WorldObject {
             
             sprites = new ArrayList<BufferedImage[]>();
             
-            for(int i = 0; i < NUMBER_OF_PLAYER_SPRITES; i++) {
+            for(int i = 0; i < numberFrames.length; i++) {
                 BufferedImage[] bi = new BufferedImage[numberFrames[i]];
                 
                 for(int j = 0; j < numberFrames[i]; j++) {
-                    
-                    //if(i != 6) {
-                        bi[j] = spriteSheet.getSubimage(
-                            j * width,
-                            i * height, 
-                            width,
-                            height
-                        );
-                    /*} else {
-                        bi[j] = spriteSheet.getSubimage(
-                            j * width * 2,
-                            i * height, 
-                            width * 2,
-                            height
-                        );
-                    }*/
+                    bi[j] = spriteSheet.getSubimage(
+                        j * width,
+                        i * height, 
+                        width,
+                        height
+                    );
                 }
                 
                 sprites.add(bi);
@@ -134,8 +136,9 @@ public class Player extends WorldObject {
     public int getFire() { return fire; }
     public int getMaxFire() { return maxFire; }
     
+    public void setLaser() { laserShooting = true; }
     public void setFiring() { firing = true; }
-    public void setScratching() { scratching = true; }
+    public void setUsingTool() { usingTool = true; }
     public void setGliding(boolean b) { gliding = b; }
     
     private void getNextPosition() {
@@ -162,7 +165,7 @@ public class Player extends WorldObject {
         }
         
         //cannot move while attacking unless in air
-        if((currentAction == SCRATCHING || currentAction == FIREBALL) && !(jumping || falling)) {
+        if((currentAction == USE_TOOL || currentAction == RANGE_ATTACK) || currentAction == LASER_ATTACK && !(jumping || falling)) {
             dx = 0;
         }
         
@@ -186,7 +189,6 @@ public class Player extends WorldObject {
     }
     
     public void update() {
-        
         ///update position
         getNextPosition();
         checkTileMapCollision();
@@ -194,23 +196,34 @@ public class Player extends WorldObject {
         
         
         //check attack has stoppped
-        if(currentAction == SCRATCHING) {
-            if(animation.hasPlayedOnce()) scratching = false;
+        if(currentAction == USE_TOOL) {
+            if(animation.hasPlayedOnce()) { usingTool = false; }
         }
-        if(currentAction == FIREBALL) {
-            if(animation.hasPlayedOnce()) firing = false;
+        if(currentAction == RANGE_ATTACK) {
+            if(animation.hasPlayedOnce()) { firing = false; }
         }
+        if(currentAction == LASER_ATTACK) {
+            if(laserBeam.shouldRemove()) { laserShooting = false; }
+        }
+        
+        //laser attack
+        if(laserShooting && currentAction != LASER_ATTACK) {
+            laserBeam.shootLaser(facingRight);
+            laserBeam.setPosition(x, y);
+        }
+        
+        //update laser attack
+        laserBeam.update();
         
         //fireball attack
         fire += 1;
         if(fire > maxFire) fire = maxFire;
-        if(firing && currentAction != FIREBALL) {
+        if(firing && currentAction != RANGE_ATTACK) {
             if(fire > fireCost) {
                 fire -= fireCost;
                 FireBall fb = new FireBall(tileMap, facingRight);
                 fb.setPosition(x, y);
                 fireBalls.add(fb);
-                //currentAction = FIREBALL;
             }
         }
         
@@ -224,17 +237,24 @@ public class Player extends WorldObject {
         }
         
         //set animation
-        if(scratching) {
-            if(currentAction != SCRATCHING) {
-                currentAction = SCRATCHING;
-                animation.setFrames(sprites.get(SCRATCHING));
+        if(usingTool) {
+            if(currentAction != USE_TOOL) {
+                currentAction = USE_TOOL;
+                animation.setFrames(sprites.get(USE_TOOL));
                 animation.setDelay(50);
                 width = 30;
             }
+        } else if(laserShooting) {
+            if(currentAction != LASER_ATTACK) {
+                currentAction = LASER_ATTACK;
+                animation.setFrames(sprites.get(LASER_ATTACK));
+                animation.setDelay(100);
+                width = 30;
+            }
         } else if(firing) {
-            if(currentAction != FIREBALL) {
-                currentAction = FIREBALL;
-                animation.setFrames(sprites.get(FIREBALL));
+            if(currentAction != RANGE_ATTACK) {
+                currentAction = RANGE_ATTACK;
+                animation.setFrames(sprites.get(RANGE_ATTACK));
                 animation.setDelay(100);
                 width = 30;
             }
@@ -243,13 +263,13 @@ public class Player extends WorldObject {
                 if(currentAction != GLIDING) {
                     currentAction = GLIDING;
                     animation.setFrames(sprites.get(GLIDING));
-                    animation.setDelay(100);
+                    animation.setDelay(-1);
                     width = 30;
                 }
             } else if(currentAction != FALLING) {
                 currentAction = FALLING;
                 animation.setFrames(sprites.get(FALLING));
-                animation.setDelay(100);
+                animation.setDelay(-1);
                 width = 30;
             }
         } else if(dy < 0) {
@@ -278,15 +298,23 @@ public class Player extends WorldObject {
         animation.update();
         
         //set direction
-        if(currentAction != SCRATCHING && currentAction != FIREBALL) {
+        if(currentAction != USE_TOOL && currentAction != RANGE_ATTACK && currentAction != LASER_ATTACK) {
             if(right) facingRight = true;
             if(left) facingRight = false;
         }
+        
+        //update sword
+        sword.update(currentAction);
     }
     
     public void draw(Graphics2D g) {
         setMapPosition();
         
+        if(currentAction == USE_TOOL && animation.hasPlayedOnce()) { animation.setFrame(sprites.get(USE_TOOL).length - 1); }
+        if(currentAction == LASER_ATTACK && animation.hasPlayedOnce()) { animation.setFrame(sprites.get(IDLE).length - 1); }
+        
+        //draw laser
+        if(laserShooting) { laserBeam.draw(g); }
         
         //draw fireballs
         for(int i = 0; i < fireBalls.size(); i++) {
@@ -318,5 +346,9 @@ public class Player extends WorldObject {
                 null
             );
         }
+        
+        //draw sword
+        sword.setPosition(x, y);
+        sword.draw(g, facingRight);
     }
 }

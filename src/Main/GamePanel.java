@@ -5,7 +5,7 @@
  *Project Name: GameCore
  */
 
-package Engine;
+package Main;
 
 import GameState.GameStateManager;
 import java.awt.Dimension;
@@ -72,6 +72,7 @@ public class GamePanel extends JPanel implements MainInterface, Runnable, KeyLis
     
     private void update(){
         gameStateManager.update();
+        KeyboardManager.update();
     }
     
     private void draw(){
@@ -86,18 +87,19 @@ public class GamePanel extends JPanel implements MainInterface, Runnable, KeyLis
     
     @Override
     public void keyPressed(KeyEvent key) {
-        gameStateManager.keyPressed(key.getKeyCode());
+        KeyboardManager.setKey(key.getKeyCode(), true);
     }
     
     @Override
     public void keyReleased(KeyEvent key) {
-        gameStateManager.keyReleased(key.getKeyCode());
+        KeyboardManager.setKey(key.getKeyCode(), false);
     }
     
     @Override
     public void keyTyped(KeyEvent e) {
     }
     
+    @Override
     public void addNotify() {
         super.addNotify();
         if(thread == null) {

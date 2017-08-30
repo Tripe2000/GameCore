@@ -7,7 +7,7 @@
 
 package Entity;
 
-import Engine.MainInterface;
+import Main.MainInterface;
 import TileMap.Tile;
 import TileMap.TileMap;
 import java.awt.Rectangle;
@@ -92,12 +92,12 @@ public abstract class WorldObject {
         int topTile = (int)(y - cHeight / 2) / tileSize;
         int bottomTile = (int)(y + cHeight / 2 - 1) / tileSize;
         
-        if(topTile < 0 ||
-                bottomTile >= tileMap.getNumberRows() ||
-                leftTile < 0 ||
-                rightTile >= tileMap.getNumberColumns()) {
-            topLeft = topRight = bottomLeft = bottomRight = false;
-            return;
+        if( topTile < 0 ||
+            bottomTile >= tileMap.getNumberRows() ||
+            leftTile < 0 ||
+            rightTile >= tileMap.getNumberColumns()) {
+                topLeft = topRight = bottomLeft = bottomRight = false;
+                return;
         }
         
         int topLeftTile = tileMap.getType(topTile, leftTile);
@@ -195,7 +195,7 @@ public abstract class WorldObject {
     public void setDown(boolean b) { down = b; }
     public void setJumping(boolean b) { jumping = b; }
     
-    public boolean notOnScreen() {                                              //if the object is beyonf the right side or the left sidwe of the screen, returns true
+    public boolean notOnScreen() {                                              //if the object is beyond the right side or the left sidwe of the screen, returns true
         return x + xMap + width < 0 ||
                 x + xMap - width > MainInterface.WIDTH ||
                 y + yMap + height < 0 ||

@@ -5,7 +5,7 @@
  *Project Name: GameCore
  */
 
-package Engine;
+package Main;
 
 public interface MainInterface {
     String GAME_NAME = "Game Name";
@@ -18,6 +18,7 @@ public interface MainInterface {
     String MENU_BACKGROUND = "/Backgrounds/menuBackground.gif";
     String GRASS_BACKGROUND = "/Backgrounds/grassbackground1.gif";
     String PLAYER_SPRITES = "/Sprites/Player/player_sprites.png";
-    int NUMBER_OF_PLAYER_SPRITES = 7;
     String FIREBALL_SPRITE_SHEET = "/Sprites/Player/fireball.gif";
+    String SWORD = "/Sprites/Player/sword_sprites.png";
+    String LASERBEAM_SPRITESHEET = "/Sprites/Player/laserbeam_sprites.png";
 }

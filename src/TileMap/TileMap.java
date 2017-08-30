@@ -7,8 +7,8 @@
 
 package TileMap;
 
-import Engine.GamePanel;
-import Engine.MainInterface;
+import Main.GamePanel;
+import Main.MainInterface;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -145,7 +145,7 @@ public class TileMap implements MainInterface {
         rowOffset = (int)-this.y / tileSize;
     }
     
-    private void fixBounds() {                                                  //no clue
+    private void fixBounds() {
         if(x < xMin) x = xMin;
         if(y < yMin) y = yMin;
         if(x > xMax) x = xMax;
