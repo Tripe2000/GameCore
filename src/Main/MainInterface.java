@@ -21,4 +21,6 @@ public interface MainInterface {
     String FIREBALL_SPRITE_SHEET = "/Sprites/Player/fireball.gif";
     String SWORD = "/Sprites/Player/sword_sprites.png";
     String LASERBEAM_SPRITESHEET = "/Sprites/Player/laserbeam_sprites.png";
+    String BAD_DUDE_SPRITESHEET = "/Sprites/Enemies/slugger.gif";
+    String HUD_IMAGE = "/HUD/hud.gif";
 }

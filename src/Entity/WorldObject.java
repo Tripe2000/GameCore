@@ -10,6 +10,7 @@ package Entity;
 import Main.MainInterface;
 import TileMap.Tile;
 import TileMap.TileMap;
+import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
 public abstract class WorldObject {
@@ -200,5 +201,26 @@ public abstract class WorldObject {
                 x + xMap - width > MainInterface.WIDTH ||
                 y + yMap + height < 0 ||
                 y + yMap - height > MainInterface.HEIGHT;
+    }
+    
+    public void draw(Graphics2D g) {
+        
+        if(facingRight) {
+            g.drawImage(
+                animation.getImage(),
+                (int)(x + xMap - width / 2),
+                (int)(y + yMap - height / 2),
+                null
+            );
+        } else {
+            g.drawImage(
+                animation.getImage(),
+                (int)(x + xMap - width / 2 + width),
+                (int)(y + yMap - height / 2),
+                -width,
+                height,
+                null
+            );
+        }
     }
 }

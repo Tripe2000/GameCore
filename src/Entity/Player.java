@@ -30,6 +30,7 @@ public class Player extends WorldObject {
     
     //laser
     private boolean laserShooting;
+    private boolean finishedChargingLaser;
     private int laserDamage;
     private LaserBeam laserBeam;
     
@@ -136,7 +137,10 @@ public class Player extends WorldObject {
     public int getFire() { return fire; }
     public int getMaxFire() { return maxFire; }
     
-    public void setLaser() { laserShooting = true; }
+    public void setLaser() { 
+        if(jumping || falling) { laserShooting = false; }
+        else { laserShooting = true; finishedChargingLaser = false; }
+    }
     public void setFiring() { firing = true; }
     public void setUsingTool() { usingTool = true; }
     public void setGliding(boolean b) { gliding = b; }
@@ -165,7 +169,7 @@ public class Player extends WorldObject {
         }
         
         //cannot move while attacking unless in air
-        if((currentAction == USE_TOOL || currentAction == RANGE_ATTACK) || currentAction == LASER_ATTACK && !(jumping || falling)) {
+        if((currentAction == LASER_ATTACK) && !(jumping || falling)) {
             dx = 0;
         }
         
@@ -208,12 +212,13 @@ public class Player extends WorldObject {
         
         //laser attack
         if(laserShooting && currentAction != LASER_ATTACK) {
-            laserBeam.shootLaser(facingRight);
             laserBeam.setPosition(x, y);
+            laserBeam.shootLaser(facingRight);
         }
         
         //update laser attack
-        laserBeam.update();
+        if(currentAction == LASER_ATTACK && animation.hasPlayedOnce()) { finishedChargingLaser = true; }
+        if(finishedChargingLaser) { laserBeam.update(); }
         
         //fireball attack
         fire += 1;
@@ -314,7 +319,7 @@ public class Player extends WorldObject {
         if(currentAction == LASER_ATTACK && animation.hasPlayedOnce()) { animation.setFrame(sprites.get(IDLE).length - 1); }
         
         //draw laser
-        if(laserShooting) { laserBeam.draw(g); }
+        if(laserShooting && finishedChargingLaser) { laserBeam.draw(g); }
         
         //draw fireballs
         for(int i = 0; i < fireBalls.size(); i++) {
@@ -329,23 +334,7 @@ public class Player extends WorldObject {
             }
         }
         
-        if(facingRight) {
-            g.drawImage(
-                animation.getImage(),
-                (int)(x + xMap - width / 2),
-                (int)(y + yMap - height / 2),
-                null
-            );
-        } else {
-            g.drawImage(
-                animation.getImage(),
-                (int)(x + xMap - width / 2 + width),
-                (int)(y + yMap - height / 2),
-                -width,
-                height,
-                null
-            );
-        }
+        super.draw(g);
         
         //draw sword
         sword.setPosition(x, y);

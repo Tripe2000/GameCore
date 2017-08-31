@@ -29,6 +29,7 @@ public class PauseState extends GameState {
     
     private String[] options = {
         "Resume",
+        "Restart",
         "Main Menu",
         "Quit"
     };
@@ -82,10 +83,15 @@ public class PauseState extends GameState {
                 break;
             case 1:
                 isBackgroundSet = false;
-                gameStateManager.setState(GameStateManager.MENUSTATE);
+                gameStateManager.setState(GameStateManager.IN_WORLD_STATE);
                 gameStateManager.setPaused(false);
                 break;
             case 2:
+                isBackgroundSet = false;
+                gameStateManager.setState(GameStateManager.MENUSTATE);
+                gameStateManager.setPaused(false);
+                break;
+            case 3:
                 System.exit(0);
                 break;
             default:

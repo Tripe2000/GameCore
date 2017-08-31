@@ -7,12 +7,16 @@
 
 package GameState;
 
+import Entity.Enemies.BadDude;
+import Entity.Enemy;
+import Entity.HUD;
 import Main.KeyboardManager;
 import Main.MainInterface;
 import Entity.Player;
 import TileMap.Background;
 import TileMap.TileMap;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 
 public class InWorldState extends GameState {
     
@@ -20,6 +24,9 @@ public class InWorldState extends GameState {
     private Background background;
     
     private Player player;
+    private ArrayList<Enemy> enemies;
+    
+    private HUD hud;
     
     public InWorldState(GameStateManager gsm) {
         super(gsm);
@@ -38,6 +45,13 @@ public class InWorldState extends GameState {
         
         player = new Player(tileMap);
         player.setPosition(100, 300);
+        
+        enemies = new ArrayList<Enemy>();
+        BadDude bd = new BadDude(tileMap);
+        bd.setPosition(100, 100);
+        enemies.add(bd);
+        
+        hud = new HUD(player);
     }
     
     @Override
@@ -52,6 +66,11 @@ public class InWorldState extends GameState {
         
         //set background
         background.setPosition(tileMap.getX(), tileMap.getY());
+        
+        //update all enemies
+        for(int i = 0; i < enemies.size(); i++) {
+            enemies.get(i).update();
+        }
     }
     
     @Override
@@ -65,6 +84,14 @@ public class InWorldState extends GameState {
         
         //draw player
         player.draw(g);
+        
+        //draw enemies
+        for(int i = 0; i < enemies.size(); i++) {
+            enemies.get(i).draw(g);
+        }
+        
+        //draw HUD
+        hud.draw(g);
     }
     
     @Override

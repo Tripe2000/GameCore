@@ -11,6 +11,7 @@ import static Main.MainInterface.LASERBEAM_SPRITESHEET;
 import TileMap.TileMap;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 public class LaserBeam extends WorldObject {
@@ -21,16 +22,19 @@ public class LaserBeam extends WorldObject {
     private boolean hit = false;
     private boolean remove = false;
     
+    private double initialX;
+    private long startTime;
+    
     public LaserBeam(TileMap tm) {
         super(tm);
         
-        moveSpeed = 3.8;
+        moveSpeed = 4;
         dx = moveSpeed;
         
         width = 30;
         height = 30;
-        cWidth = 14;
-        cHeight = 14;
+        cWidth = 80;
+        cHeight = 20;
         
         //load sprites
         try {
@@ -62,19 +66,18 @@ public class LaserBeam extends WorldObject {
     
     public boolean shouldRemove() { return remove; }
     
-    public void shootLaser(boolean facingRight) { 
+    public void shootLaser(boolean facingRight) {
+        startTime = System.nanoTime();
+        initialX = this.x;
+        
+        this.facingRight = facingRight;
         if(facingRight) { dx = moveSpeed; }
         else { dx = -moveSpeed; }
         
         remove = false;
         hit = false;
         animation.setFrames(sprites);
-        animation.setDelay(100);
-        
-        calculateDistanceTravel();
-    }
-    
-    private void calculateDistanceTravel() {
+        animation.setDelay(-1);
     }
     
     public void update() {
@@ -84,23 +87,41 @@ public class LaserBeam extends WorldObject {
         if(dx == 0 && !hit) setHit();
         
         animation.update();
-        if(hit) remove = true;
+        if(hit && (System.nanoTime() - startTime) / 1000000 > 2000) remove = true;
     }
     
     public void draw(Graphics2D g) {
         setMapPosition();
         
         if(facingRight) {
+            for(int i = -1; initialX + xMap + i * 30 < x + xMap; i++) {
+                g.drawImage(
+                        sprites[0],
+                        (int)(initialX + i * 30 + xMap - width / 2) + 60,
+                        (int)(y + yMap - height / 2),
+                        null
+                );
+            }
             g.drawImage(
                 animation.getImage(),
-                (int)(x + xMap - width / 2) + 30,
+                (int)(x + xMap - width / 2) + 60,
                 (int)(y + yMap - height / 2),
                 null
             );
         } else {
+            for(int i = -1; initialX + xMap - i * 30 > x + xMap; i++) {
+                g.drawImage(
+                        sprites[0],
+                        (int)(initialX - i * 30 + xMap - width / 2 + width) - 60,
+                        (int)(y + yMap - height / 2),
+                        -width,
+                        height,
+                        null
+                );
+            }
             g.drawImage(
                 animation.getImage(),
-                (int)(x + xMap - width / 2 + width) - 30,
+                (int)(x + xMap - width / 2 + width) - 60,
                 (int)(y + yMap - height / 2),
                 -width,
                 height,
