@@ -16,7 +16,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
-public class Sword extends WorldObject {
+public class Sword extends WorldItem {
     
     //animation stuff
     private ArrayList<BufferedImage[]> sprites;
@@ -42,7 +42,7 @@ public class Sword extends WorldObject {
         
         try {
             
-            BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream(MainInterface.SWORD));
+            BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream(MainInterface.SWORD_SPRITESHEET));
             sprites = new ArrayList<BufferedImage[]>();
             
             for(int i = 0; i < numberFrames.length; i++) {

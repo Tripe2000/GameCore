@@ -8,12 +8,12 @@
 package Entity;
 
 import Entity.Item.Sword;
-import static Main.MainInterface.PLAYER_SPRITES;
 import TileMap.TileMap;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
+import static Main.MainInterface.PLAYER_SPRITESHEET;
 
 public class Player extends WorldObject {
     
@@ -101,8 +101,7 @@ public class Player extends WorldObject {
         //load sprites
         try {
             
-            BufferedImage spriteSheet = ImageIO.read(
-                getClass().getResourceAsStream(PLAYER_SPRITES)
+            BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream(PLAYER_SPRITESHEET)
             );
             
             sprites = new ArrayList<BufferedImage[]>();
@@ -192,12 +191,11 @@ public class Player extends WorldObject {
         
     }
     
-    public void update() {
+    public void update() {        
         ///update position
         getNextPosition();
         checkTileMapCollision();
         setPosition(xTemp, yTemp);
-        
         
         //check attack has stoppped
         if(currentAction == USE_TOOL) {

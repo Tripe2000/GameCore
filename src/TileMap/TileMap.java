@@ -64,10 +64,25 @@ public class TileMap implements MainInterface {
             tileSet = ImageIO.read(getClass().getResourceAsStream(s));
             
             numberTilesAcross = tileSet.getWidth() / tileSize;
-            tiles = new Tile[2][numberTilesAcross];                             //2 is the number of rows of tiles in the file chosen
+            tiles = new Tile[8][numberTilesAcross];                             //2 is the number of rows of tiles in the file chosen
             
             BufferedImage subImage;
-            for(int column = 0; column < numberTilesAcross; column++) {
+            int tileType;
+            for(int row = 0; row < 8; row++) {
+                for(int column = 0; column < numberTilesAcross; column++) {
+                    subImage = tileSet.getSubimage(
+                            column * tileSize,
+                            row * tileSize,
+                            tileSize,
+                            tileSize
+                    );
+                    
+                    if(row > 5 || row == 0) { tileType = Tile.NORMAL; }
+                    else { tileType = Tile.BLOCKED; }
+                    tiles[row][column] = new Tile(subImage, tileType);
+                }
+            }
+            /*for(int column = 0; column < numberTilesAcross; column++) {
                 
                 subImage = tileSet.getSubimage(column * tileSize,               //x position of subimage top-left corner
                                                 0,                              //y position of subimage top-left corner
@@ -80,7 +95,7 @@ public class TileMap implements MainInterface {
                                                 tileSize, 
                                                 tileSize);
                 tiles[1][column] = new Tile(subImage, Tile.BLOCKED);
-            }
+            }*/
             
         } catch(Exception e) {
             e.printStackTrace();

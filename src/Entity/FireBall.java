@@ -7,11 +7,11 @@
 
 package Entity;
 
-import static Main.MainInterface.FIREBALL_SPRITE_SHEET;
 import TileMap.TileMap;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import static Main.MainInterface.FIREBALL_SPRITESHEET;
 
 public class FireBall extends WorldObject {
     
@@ -37,7 +37,7 @@ public class FireBall extends WorldObject {
         //load sprites
         try {
             
-            BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream(FIREBALL_SPRITE_SHEET));
+            BufferedImage spriteSheet = ImageIO.read(getClass().getResourceAsStream(FIREBALL_SPRITESHEET));
             
             sprites = new BufferedImage[4];
             for(int i = 0; i < sprites.length; i++) {

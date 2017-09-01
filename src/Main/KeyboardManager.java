@@ -27,6 +27,7 @@ public class KeyboardManager {
 	public static final int ENTER = 8;
 	public static final int ESCAPE = 9;
         public static final int B = 10;
+        public static final int I = 11;
     
     public static void setKey(int keyCode, boolean pressed){
         switch(keyCode) {
@@ -62,6 +63,9 @@ public class KeyboardManager {
                 break;
             case KeyEvent.VK_B:
                 keyState[B] = pressed;
+                break;
+            case KeyEvent.VK_I:
+                keyState[I] = pressed;
                 break;
             default: break;
         }

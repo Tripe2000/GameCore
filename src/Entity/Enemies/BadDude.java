@@ -97,7 +97,6 @@ public class BadDude extends Enemy {
             right = false;
             left = true;
             facingRight = false;
-            System.out.println("reach");
         } else if(left && dx == 0) {
             left = false;
             right = true;
