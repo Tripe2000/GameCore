@@ -2,7 +2,7 @@
  *Date: 21/08/2017
  *Author: Whaleballs
  *File Name: InventoryManager.java
- *Project Name: GameCore
+ *Project Name: GameCores
  */
 
 package Entity;
