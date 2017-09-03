@@ -336,6 +336,6 @@ public class Player extends WorldObject {
         
         //draw sword
         sword.setPosition(x, y);
-        sword.draw(g, facingRight);
+        sword.drawEquipped(g, facingRight);
     }
 }

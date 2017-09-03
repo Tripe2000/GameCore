@@ -10,6 +10,7 @@ package Entity.Item;
 import Entity.Animation;
 import Entity.WorldObject;
 import Main.MainInterface;
+import static Main.MainInterface.SWORD_ICON;
 import TileMap.TileMap;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -53,6 +54,8 @@ public class Sword extends WorldItem {
                 sprites.add(bi);
             }
             
+            icon = ImageIO.read(getClass().getResourceAsStream(SWORD_ICON));
+            
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -63,7 +66,20 @@ public class Sword extends WorldItem {
         animation.setDelay(400);
     }
     
+    private void getNextPosition() {
+        //falling
+        if(falling) {
+            dy += fallSpeed;
+        }
+    }
+    
     public void update(int currentAction) {
+        if(inWorld) {
+            getNextPosition();
+            checkTileMapCollision();
+            setPosition(xTemp, yTemp);
+        }
+        
         if(currentAction == LASER_ATTACK) { this.currentAction = currentAction; return; }
         if(this.currentAction != currentAction) {
             this.currentAction = currentAction;
@@ -78,7 +94,7 @@ public class Sword extends WorldItem {
         animation.update();
     }
     
-    public void draw(Graphics2D g, boolean facingRight) {
+    public void drawEquipped(Graphics2D g, boolean facingRight) {
         if(currentAction == LASER_ATTACK) { return; }
         setMapPosition();
         if(currentAction == USE_TOOL && animation.hasPlayedOnce()) { animation.setFrame(sprites.get(USE_TOOL).length - 1); }
@@ -99,5 +115,20 @@ public class Sword extends WorldItem {
                 null
             );
         }
+    }
+    
+    @Override
+    public void drawInventory(Graphics2D g, int position, int x, int y) {
+        int h = position / 6;
+        h = 34 * h + y + 22;
+        
+        int w = position % 6;
+        w = 34 * w + x + 22;
+        
+        System.out.println(position);
+        System.out.println("w" + w);
+        System.out.println("h" + h);
+        
+        g.drawImage(icon, w, h, null);
     }
 }

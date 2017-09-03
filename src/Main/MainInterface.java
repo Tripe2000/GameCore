@@ -23,6 +23,7 @@ public interface MainInterface {
     String INVENTORY_SPRITESHEET = "/Inventory/inventory.png";
     String FIREBALL_SPRITESHEET = "/Sprites/Player/fireball.gif";
     String SWORD_SPRITESHEET = "/Sprites/Player/sword_sprites.png";
+    String SWORD_ICON = "/Inventory/sword_icon.png";
     String LASERBEAM_SPRITESHEET = "/Sprites/Player/laserbeam_sprites.png";
     String BAD_DUDE_SPRITESHEET = "/Sprites/Enemies/slugger.gif";
     String HUD_IMAGE = "/HUD/hud.gif";

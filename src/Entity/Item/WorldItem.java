@@ -9,11 +9,18 @@ package Entity.Item;
 
 import Entity.WorldObject;
 import TileMap.TileMap;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
-public class WorldItem extends WorldObject {
+public abstract class WorldItem extends WorldObject {
+    
+    protected boolean inWorld;
+    
+    protected BufferedImage icon;
     
     public WorldItem(TileMap tm) {
         super(tm);
     }
     
+    public abstract void drawInventory(Graphics2D g, int position, int x, int y);
 }
